@@ -31,9 +31,7 @@
     "url": "https://github.com/blockai/react-published-images-list/issues"
   },
   "homepage": "https://github.com/blockai/react-published-images-list#readme",
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "peerDependencies": {
     "react": "*"
   },
@@ -47,11 +45,14 @@
     "http-server": "^0.8.0",
     "jsdom": "^3.1.2",
     "nodemon": "^1.3.7",
+    "openpublish": "0.0.6",
     "randombytes": "^2.0.1",
     "react-tools": "^0.13.3",
     "request": "^2.58.0",
     "tap-spec": "^4.0.2",
     "tapes": "^2.0.0",
-    "watchify": "^3.3.0"
+    "test-common-wallet": "^1.0.2",
+    "watchify": "^3.3.0",
+    "xhr": "^2.0.3"
   }
 }
