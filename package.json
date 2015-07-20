@@ -1,0 +1,57 @@
+{
+  "name": "react-published-images-list",
+  "version": "0.0.1",
+  "description": "A list of the most recent images registered with Open Publish.",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "make",
+    "build-dev": "watchify example/example.js -o example/build.js -t babelify -v",
+    "watch": "nodemon --exec make --ignore example/ --ignore build/",
+    "test": "npm run build && tapes test/**/*.js | tap-spec",
+    "start": "http-server ./example/ -a 0.0.0.0 -p 9001 -c-1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blockai/react-published-images-list.git"
+  },
+  "keywords": [
+    "react",
+    "common-blockchain",
+    "common-wallet",
+    "bitcoin",
+    "bitstore",
+    "openpublish",
+    "image",
+    "publish",
+    "react-component"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blockai/react-published-images-list/issues"
+  },
+  "homepage": "https://github.com/blockai/react-published-images-list#readme",
+  "dependencies": {
+
+  },
+  "peerDependencies": {
+    "react": "*"
+  },
+  "devDependencies": {
+    "babel": "^5.6.14",
+    "babelify": "^6.1.3",
+    "bitcoinjs-lib": "^1.5.7",
+    "blockcast": "^1.0.3",
+    "blockcypher-unofficial": "^1.4.1",
+    "browserify": "^10.2.6",
+    "http-server": "^0.8.0",
+    "jsdom": "^3.1.2",
+    "nodemon": "^1.3.7",
+    "randombytes": "^2.0.1",
+    "react-tools": "^0.13.3",
+    "request": "^2.58.0",
+    "tap-spec": "^4.0.2",
+    "tapes": "^2.0.0",
+    "watchify": "^3.3.0"
+  }
+}

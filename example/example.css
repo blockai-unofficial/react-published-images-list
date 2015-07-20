@@ -1,0 +1,18 @@
+* {
+  box-sizing: border-box;
+  font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+#example {
+  width: 675px;
+  margin: 0 auto;
+}
+
+.react-published-images-list {
+  margin: 20px;
+  border: 1px solid black;
+  min-height: 200px;
+}
