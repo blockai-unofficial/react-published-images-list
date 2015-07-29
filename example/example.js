@@ -23,7 +23,7 @@ var commonWallet = testCommonWallet({
   commonBlockchain: commonBlockchain
 });
 
-openpublishState.findAllByType({type:'image'}, function(err, openpublishImageDocuments) {
+openpublishState.findAllByType({type:'image', limit:10}, function(err, openpublishImageDocuments) {
   React.render(React.createElement(PublishedImagesList, { 
     showHeader: true,
     showInstructions: true,

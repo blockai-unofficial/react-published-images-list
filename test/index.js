@@ -50,7 +50,7 @@ var commonWallet = testCommonWallet({
 test('react-published-images-list', function (t) {
 
   t.test('should create the component', function (t) {
-    openpublishState.findAllByType({type:'image'}, function(err, openpublishImageDocuments) {
+    openpublishState.findAllByType({type:'image', limit:2}, function(err, openpublishImageDocuments) {
       var renderedComponent = TestUtils.renderIntoDocument(React.createElement(PublishedImagesList, { commonWallet: commonWallet, commonBlockchain: commonBlockchain, openpublishImageDocuments:openpublishImageDocuments }));
       var component = TestUtils.findRenderedDOMComponentWithClass(renderedComponent, 'react-published-images-list');
       var element = React.findDOMNode(component);

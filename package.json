@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/blockai/react-published-images-list#readme",
   "dependencies": {
-    "openpublish-state": "0.0.1"
+    "openpublish-state": "0.0.2"
   },
   "peerDependencies": {
     "react": "*"
