@@ -1,11 +1,11 @@
 {
   "name": "react-published-images-list",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A list of the most recent images registered with Open Publish.",
   "main": "build/index.js",
   "scripts": {
     "build": "make",
-    "build-dev": "watchify example/example.js -o example/build.js -t babelify -v",
+    "build-dev": "watchify example/example.js -o example/build.js -t babelify -v -d",
     "watch": "nodemon --exec make --ignore example/ --ignore build/",
     "test": "npm run build && tapes test/**/*.js | tap-spec",
     "start": "http-server ./example/ -a 0.0.0.0 -p 9001 -c-1"
@@ -31,7 +31,9 @@
     "url": "https://github.com/blockai/react-published-images-list/issues"
   },
   "homepage": "https://github.com/blockai/react-published-images-list#readme",
-  "dependencies": {},
+  "dependencies": {
+    "openpublish-state": "0.0.1"
+  },
   "peerDependencies": {
     "react": "*"
   },
@@ -51,7 +53,7 @@
     "request": "^2.58.0",
     "tap-spec": "^4.0.2",
     "tapes": "^2.0.0",
-    "test-common-wallet": "^1.0.2",
+    "test-common-wallet": "^1.0.3",
     "watchify": "^3.3.0",
     "xhr": "^2.0.3"
   }

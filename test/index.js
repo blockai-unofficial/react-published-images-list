@@ -6,9 +6,8 @@ var blockcast = require('blockcast');
 
 var testCommonWallet = require('test-common-wallet');
 
-var openpublishDocuments = require('../example/opendocs.json');
-var openpublishImageDocuments = openpublishDocuments.filter(function(doc) { 
-  return doc.type.indexOf("image") > -1 
+var openpublishState = require('openpublish-state')({
+  network: "testnet"
 });
 
 /*
@@ -51,11 +50,13 @@ var commonWallet = testCommonWallet({
 test('react-published-images-list', function (t) {
 
   t.test('should create the component', function (t) {
-    var renderedComponent = TestUtils.renderIntoDocument(React.createElement(PublishedImagesList, { commonWallet: commonWallet, commonBlockchain: commonBlockchain, openpublishImageDocuments:openpublishImageDocuments }));
-    var component = TestUtils.findRenderedDOMComponentWithClass(renderedComponent, 'react-published-images-list');
-    var element = React.findDOMNode(component);
-    t.ok(element, "has react-published-images-list DOM element");
-    t.end();
+    openpublishState.findAllByType({type:'image'}, function(err, openpublishImageDocuments) {
+      var renderedComponent = TestUtils.renderIntoDocument(React.createElement(PublishedImagesList, { commonWallet: commonWallet, commonBlockchain: commonBlockchain, openpublishImageDocuments:openpublishImageDocuments }));
+      var component = TestUtils.findRenderedDOMComponentWithClass(renderedComponent, 'react-published-images-list');
+      var element = React.findDOMNode(component);
+      t.ok(element, "has react-published-images-list DOM element");
+      t.end();
+    });
   });
 
   t.end();

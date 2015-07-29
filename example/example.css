@@ -4,12 +4,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  margin: 0;
-  padding: 0;
+}
+
+body {
+  background-color: #eee;
 }
 
 ol {
-  display: block;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -21,19 +22,40 @@ ol {
 }
 
 .react-published-images-list {
-  margin: 20px;
-  min-height: 200px;
+
 }
 
 .opendoc-image {
-  background-color: #ddd;
-  margin: 0 0 30px 0;
+  position: relative;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 100ms ease-in-out;
+}
+
+.opendoc-image.loaded {
+  opacity: 1;
+  visibility: visible;
 }
 
 .opendoc-image img {
   width: 100%;
 }
 
-.opendoc-image button {
-  padding: 10px;
+.opendoc-image:hover button.tip {
+  opacity: 1;
+}
+
+.opendoc-image button.tip {
+  transition: opacity 100ms ease-in-out;
+  opacity: 0.5;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 30px;
+}
+
+button.tip img {
+  width: 25px;
+  height: 23px;
+  margin: 2px;
 }
