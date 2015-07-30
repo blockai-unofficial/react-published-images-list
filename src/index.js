@@ -1,5 +1,7 @@
 var React = require('react');
 var openpublish = require('openpublish');
+var md5 = require('md5');
+var dateFormat = require('dateformat');
 
 var PublishedImagesList = React.createClass({
   displayName: 'PublishedImagesList',
@@ -44,7 +46,15 @@ var PublishedImagesList = React.createClass({
   render: function () {
     var component = this;
     var openpublishImageDocuments = this.props.openpublishImageDocuments;
+
     var createImage = function(imageDoc) {
+
+      // https://jsfiddle.net/etzacpt9/ - it is possible to get an array buffer and compute a sha1 to verify URIs in the client
+      // https://developers.google.com/web/updates/2011/09/Workers-ArrayBuffer?hl=en
+      // https://www.npmjs.com/package/webworkify
+      // http://stackoverflow.com/questions/17819820/how-to-get-correct-sha1-hash-of-blob-using-cryptojs
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays
+
       var tipClick = function(event) {
         component.tipImage(imageDoc);
       };
@@ -69,10 +79,23 @@ var PublishedImagesList = React.createClass({
       if (component.state.errorImages.indexOf(imageDoc) > -1) {
         return <div />;
       }
+      var createdAt = dateFormat(new Date(imageDoc.created_at), "dddd, mmmm dS, yyyy, h:MM TT");
+      var blockheightLink = <a href={"https://www.blocktrail.com/tBTC/tx/" + imageDoc.txout_tx_hash}>{imageDoc.output.height}</a>;
       return (
         <li className={className} key={imageDoc.sha1}>
           <div className="panel-body">
+            <div className="created-container">
+              <div className="created">
+                <div><span className="blockheight label label-info">{blockheightLink}</span><span className="time">{createdAt}</span></div>
+              </div>
+            </div>
             <img onLoad={imgLoad} onError={imgError} src={imageDoc.uri} />
+            <div className="info-container">
+              <div className="info">
+                <img src={"https://secure.gravatar.com/avatar/" + md5(imageDoc.sourceAddresses[0]) + "?d=retro&s=30"} />
+                <h4 className="address">{imageDoc.sourceAddresses[0]}</h4>
+              </div>
+            </div>
             <button className="tip btn btn-xs btn-default" onClick={tipClick}><img src="http://blockai-front-page.herokuapp.com/assets/support@2x.png" /></button>
           </div>
         </li>
