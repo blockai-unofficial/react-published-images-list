@@ -48,6 +48,7 @@ var PublishedImagesList = React.createClass({
   render: function render() {
     var component = this;
     var openpublishImageDocuments = this.props.openpublishImageDocuments;
+    var addressBook = this.props.addressBook || {};
 
     var createImage = function createImage(imageDoc) {
 
@@ -56,6 +57,9 @@ var PublishedImagesList = React.createClass({
       // https://www.npmjs.com/package/webworkify
       // http://stackoverflow.com/questions/17819820/how-to-get-correct-sha1-hash-of-blob-using-cryptojs
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays
+
+      // http://regex.info/exif.cgi?imgurl=https%3A%2F%2Fbitstore-test.blockai.com%2FmsLoJikUfxbc2U5UhRSjc2svusBSqMdqxZ%2Fsha1%2F4172700449af9e9bdaf22982e223ace206733a4d
+      // what about showing EXIF data?
 
       var tipClick = function tipClick(event) {
         component.tipImage(imageDoc);
@@ -87,6 +91,10 @@ var PublishedImagesList = React.createClass({
         { href: 'https://www.blocktrail.com/tBTC/tx/' + imageDoc.txout_tx_hash },
         imageDoc.output.height
       );
+      var sourceAddress = imageDoc.sourceAddresses[0];
+      var avatarInfo = addressBook[sourceAddress] || false;
+      var avatarImageUrl = avatarInfo ? avatarInfo.avatarImageUrl : 'https://secure.gravatar.com/avatar/' + md5(sourceAddress) + '?d=retro&s=30';
+      var avatarName = avatarInfo ? avatarInfo.avatarName : sourceAddress;
       return React.createElement(
         'li',
         { className: className, key: imageDoc.sha1 },
@@ -122,11 +130,11 @@ var PublishedImagesList = React.createClass({
             React.createElement(
               'div',
               { className: 'info' },
-              React.createElement('img', { src: 'https://secure.gravatar.com/avatar/' + md5(imageDoc.sourceAddresses[0]) + '?d=retro&s=30' }),
+              React.createElement('img', { src: avatarImageUrl }),
               React.createElement(
                 'h4',
-                { className: 'address' },
-                imageDoc.sourceAddresses[0]
+                null,
+                avatarName
               )
             )
           ),

@@ -23,12 +23,34 @@ var commonWallet = testCommonWallet({
   commonBlockchain: commonBlockchain
 });
 
-openpublishState.findAllByType({type:'image', limit:30}, function(err, openpublishImageDocuments) {
-  React.render(React.createElement(PublishedImagesList, { 
-    showHeader: true,
-    showInstructions: true,
-    commonBlockchain: commonBlockchain, 
-    commonWallet: commonWallet, 
-    openpublishImageDocuments: openpublishImageDocuments
-  }), document.getElementById('example'));
+var getAddressBookFromBlockaiWithDocuments = function(openpublishDocuments, callback) {
+  var onlyUnique = function(value, index, self) { 
+    return self.indexOf(value) === index;
+  }
+  var addresses = openpublishDocuments.map(function(d) { return d.sourceAddresses[0] }).filter(onlyUnique);
+  xhr({uri: 'http://localhost:5051/v0/batchPublicInfo/' + addresses.join(",")}, function(err, res, body) {
+    var addresses = JSON.parse(body);
+    var addressBook = {};
+    addresses.forEach(function(a) {
+      addressBook[a.publicAddress] = {
+        avatarImageUrl: a.profileImageUrl,
+        avatarName: a.quickCode,
+        avatarSource: 'blockai'
+      };
+    });
+    callback(false, addressBook);
+  });
+};
+
+openpublishState.findAllByType({type:'image', limit:5}, function(err, openpublishImageDocuments) {
+  getAddressBookFromBlockaiWithDocuments(openpublishImageDocuments, function(err, addressBook) {
+    React.render(React.createElement(PublishedImagesList, { 
+      showHeader: true,
+      showInstructions: true,
+      addressBook: addressBook,
+      commonBlockchain: commonBlockchain, 
+      commonWallet: commonWallet, 
+      openpublishImageDocuments: openpublishImageDocuments
+    }), document.getElementById('example'));
+  });
 });

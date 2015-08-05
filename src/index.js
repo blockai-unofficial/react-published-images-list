@@ -46,6 +46,7 @@ var PublishedImagesList = React.createClass({
   render: function () {
     var component = this;
     var openpublishImageDocuments = this.props.openpublishImageDocuments;
+    var addressBook = this.props.addressBook || {};
 
     var createImage = function(imageDoc) {
 
@@ -54,6 +55,9 @@ var PublishedImagesList = React.createClass({
       // https://www.npmjs.com/package/webworkify
       // http://stackoverflow.com/questions/17819820/how-to-get-correct-sha1-hash-of-blob-using-cryptojs
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays
+
+      // http://regex.info/exif.cgi?imgurl=https%3A%2F%2Fbitstore-test.blockai.com%2FmsLoJikUfxbc2U5UhRSjc2svusBSqMdqxZ%2Fsha1%2F4172700449af9e9bdaf22982e223ace206733a4d
+      // what about showing EXIF data?
 
       var tipClick = function(event) {
         component.tipImage(imageDoc);
@@ -81,6 +85,10 @@ var PublishedImagesList = React.createClass({
       }
       var createdAt = dateFormat(new Date(imageDoc.created_at), "dddd, mmmm dS, yyyy, h:MM TT");
       var blockheightLink = <a href={"https://www.blocktrail.com/tBTC/tx/" + imageDoc.txout_tx_hash}>{imageDoc.output.height}</a>;
+      var sourceAddress = imageDoc.sourceAddresses[0];
+      var avatarInfo = addressBook[sourceAddress] || false;
+      var avatarImageUrl = avatarInfo ? avatarInfo.avatarImageUrl : "https://secure.gravatar.com/avatar/" + md5(sourceAddress) + "?d=retro&s=30";
+      var avatarName = avatarInfo ? avatarInfo.avatarName : sourceAddress;
       return (
         <li className={className} key={imageDoc.sha1}>
           <div className="panel-body">
@@ -92,8 +100,8 @@ var PublishedImagesList = React.createClass({
             <img onLoad={imgLoad} onError={imgError} src={imageDoc.uri} />
             <div className="info-container">
               <div className="info">
-                <img src={"https://secure.gravatar.com/avatar/" + md5(imageDoc.sourceAddresses[0]) + "?d=retro&s=30"} />
-                <h4 className="address">{imageDoc.sourceAddresses[0]}</h4>
+                <img src={avatarImageUrl} />
+                <h4>{avatarName}</h4>
               </div>
             </div>
             <button className="tip btn btn-xs btn-default" onClick={tipClick}><img src="http://blockai-front-page.herokuapp.com/assets/support@2x.png" /></button>
