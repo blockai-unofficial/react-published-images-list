@@ -3,6 +3,14 @@ var React = require('react');
 var bitcoin = require('bitcoinjs-lib');
 var randombytes = require('randombytes');
 var xhr = require('xhr');
+var NoBalance = require('./no-balance');
+
+var DEV_HOST = "http://localhost:5051";
+
+var coreHost = "https://core.quickcoin.co";
+if (typeof(DEV_HOST) != "undefined") {
+  coreHost = DEV_HOST;
+}
 
 var openpublishState = require('openpublish-state')({
   network: "testnet"
@@ -28,9 +36,12 @@ var getAddressBookFromBlockaiWithDocuments = function(openpublishDocuments, call
     return self.indexOf(value) === index;
   }
   var addresses = openpublishDocuments.map(function(d) { return d.sourceAddresses[0] }).filter(onlyUnique);
-  xhr({uri: 'http://localhost:5051/v0/batchPublicInfo/' + addresses.join(",")}, function(err, res, body) {
-    var addresses = JSON.parse(body);
+  xhr({uri: coreHost + '/v0/batchPublicInfo/' + addresses.join(",")}, function(err, res, body) {
     var addressBook = {};
+    if (res.statusCode >= 400) {
+      return callback(false, addressBook);
+    }
+    var addresses = JSON.parse(body);
     addresses.forEach(function(a) {
       addressBook[a.publicAddress] = {
         avatarImageUrl: a.profileImageUrl,
@@ -42,15 +53,20 @@ var getAddressBookFromBlockaiWithDocuments = function(openpublishDocuments, call
   });
 };
 
-openpublishState.findAllByType({type:'image', limit:5}, function(err, openpublishImageDocuments) {
-  getAddressBookFromBlockaiWithDocuments(openpublishImageDocuments, function(err, addressBook) {
-    React.render(React.createElement(PublishedImagesList, { 
-      showHeader: true,
-      showInstructions: true,
-      addressBook: addressBook,
-      commonBlockchain: commonBlockchain, 
-      commonWallet: commonWallet, 
-      openpublishImageDocuments: openpublishImageDocuments
-    }), document.getElementById('example'));
+commonBlockchain.Addresses.Summary([commonWallet.address], function(err, adrs) { 
+  var balance = adrs && adrs[0] ? adrs[0].balance : 0;
+  openpublishState.findAllByType({type:'image', limit:1}, function(err, openpublishImageDocuments) {
+    getAddressBookFromBlockaiWithDocuments(openpublishImageDocuments, function(err, addressBook) {
+      React.render(React.createElement(PublishedImagesList, { 
+        showHeader: true,
+        showInstructions: true,
+        addressBook: addressBook,
+        balance: balance,
+        NoBalance: NoBalance,
+        commonBlockchain: commonBlockchain, 
+        commonWallet: commonWallet, 
+        openpublishImageDocuments: openpublishImageDocuments
+      }), document.getElementById('example'));
+    });
   });
 });

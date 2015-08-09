@@ -2,6 +2,7 @@ var React = require('react');
 var openpublish = require('openpublish');
 var md5 = require('md5');
 var dateFormat = require('dateformat');
+var Modal = require('react-bootstrap/lib/Modal');
 
 var PublishedImagesList = React.createClass({
   displayName: 'PublishedImagesList',
@@ -12,12 +13,46 @@ var PublishedImagesList = React.createClass({
   },
   getInitialState: function() {
     return {
+      balance: this.props.balance || 0,
       tippingState: {},
       loadedImages: [],
-      errorImages: []
+      errorImages: [],
+      showNeedBitcoinModal: false
     };
   },
+  componentDidMount: function() {
+    var component = this;
+    setInterval(function() {
+      if (!component.state.balance) {
+        component.updateBalance();
+      }
+    }, 3000);
+  },
+  updateBalance: function(callback) {
+    console.log("updateBalance");
+    var component = this;
+    var commonWallet = this.props.commonWallet;
+    var commonBlockchain = this.props.commonBlockchain;
+    commonBlockchain.Addresses.Summary([commonWallet.address], function(err, adrs) { 
+      var balance = adrs && adrs[0] ? adrs[0].balance : 0;
+      console.log("balance", balance);
+      component.setState({
+        balance: balance
+      });
+      if (callback) {
+        callback(false, balance);
+      }
+    });
+  },
+  hideNeedBitcoinModal: function() {
+    this.setState({showNeedBitcoinModal: false});
+  },
   tipImage: function(imageDoc) {
+    var component = this;
+    if (this.state.balance === 0) {
+      this.setState({showNeedBitcoinModal: true});
+      return;
+    }
     var component = this;
     var tippingState = this.state.tippingState;
     tippingState[imageDoc.sha1] = "tipping";
@@ -44,6 +79,7 @@ var PublishedImagesList = React.createClass({
     });
   },
   render: function () {
+
     var component = this;
     var openpublishImageDocuments = this.props.openpublishImageDocuments;
     var addressBook = this.props.addressBook || {};
@@ -109,15 +145,42 @@ var PublishedImagesList = React.createClass({
         </li>
       )
     };
+
     var header = this.props.showHeader ? <h1>Open Publish Images</h1> : <div />;
     var instructions = this.props.showInstructions ? <p className="alert alert-warning">Click on <button className="tip btn btn-xs btn-default"><img src="http://blockai-front-page.herokuapp.com/assets/support@2x.png" /></button> to tip the owner 110 bits, or about 3 cents worth of Bitcoin!</p> : <div />;
     var list = <ol className="images-list">{openpublishImageDocuments.map(createImage)}</ol>
+
+    var modalBodyContent;
+    if (this.state.balance === 0 && this.props.balance === 0 && this.props.NoBalance) {
+      var NoBalance = this.props.NoBalance;
+      modalBodyContent = <NoBalance address={this.props.commonWallet.address} intentMessage={"to tip Open Published images"} />;
+    }
+    else {
+      modalBodyContent= (
+        <div>
+          <h4>Bitcoin Transaction Success</h4>
+          <p>
+            Great, you're wallet now has funds.
+          </p>
+          <p>
+            Feel free to tip any and all Open Published images and support what you like!
+          </p>
+        </div>
+      );
+    }
+
     return (
       <div className='react-published-images-list'>
         {header}
         {instructions}
         {list}
+        <Modal show={this.state.showNeedBitcoinModal} onHide={this.hideNeedBitcoinModal}>
+          <Modal.Body>
+            { modalBodyContent }
+          </Modal.Body>
+        </Modal>
       </div>
+      
     );
   }
 });
