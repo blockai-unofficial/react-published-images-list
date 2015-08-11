@@ -4,6 +4,7 @@ var React = require('react');
 var openpublish = require('openpublish');
 var md5 = require('md5');
 var dateFormat = require('dateformat');
+var Modal = require('react-bootstrap/lib/Modal');
 
 var PublishedImagesList = React.createClass({
   displayName: 'PublishedImagesList',
@@ -14,12 +15,46 @@ var PublishedImagesList = React.createClass({
   },
   getInitialState: function getInitialState() {
     return {
+      balance: this.props.balance || 0,
       tippingState: {},
       loadedImages: [],
-      errorImages: []
+      errorImages: [],
+      showNeedBitcoinModal: false
     };
   },
+  componentDidMount: function componentDidMount() {
+    var component = this;
+    setInterval(function () {
+      if (!component.state.balance) {
+        component.updateBalance();
+      }
+    }, 3000);
+  },
+  updateBalance: function updateBalance(callback) {
+    console.log('updateBalance');
+    var component = this;
+    var commonWallet = this.props.commonWallet;
+    var commonBlockchain = this.props.commonBlockchain;
+    commonBlockchain.Addresses.Summary([commonWallet.address], function (err, adrs) {
+      var balance = adrs && adrs[0] ? adrs[0].balance : 0;
+      console.log('balance', balance);
+      component.setState({
+        balance: balance
+      });
+      if (callback) {
+        callback(false, balance);
+      }
+    });
+  },
+  hideNeedBitcoinModal: function hideNeedBitcoinModal() {
+    this.setState({ showNeedBitcoinModal: false });
+  },
   tipImage: function tipImage(imageDoc) {
+    var component = this;
+    if (this.state.balance === 0) {
+      this.setState({ showNeedBitcoinModal: true });
+      return;
+    }
     var component = this;
     var tippingState = this.state.tippingState;
     tippingState[imageDoc.sha1] = 'tipping';
@@ -46,6 +81,7 @@ var PublishedImagesList = React.createClass({
     });
   },
   render: function render() {
+
     var component = this;
     var openpublishImageDocuments = this.props.openpublishImageDocuments;
     var addressBook = this.props.addressBook || {};
@@ -146,6 +182,7 @@ var PublishedImagesList = React.createClass({
         )
       );
     };
+
     var header = this.props.showHeader ? React.createElement(
       'h1',
       null,
@@ -167,12 +204,48 @@ var PublishedImagesList = React.createClass({
       { className: 'images-list' },
       openpublishImageDocuments.map(createImage)
     );
+
+    var modalBodyContent;
+    if (this.state.balance === 0 && this.props.balance === 0 && this.props.NoBalance) {
+      var NoBalance = this.props.NoBalance;
+      modalBodyContent = React.createElement(NoBalance, { address: this.props.commonWallet.address, intentMessage: 'to tip Open Published images' });
+    } else {
+      modalBodyContent = React.createElement(
+        'div',
+        null,
+        React.createElement(
+          'h4',
+          null,
+          'Bitcoin Transaction Success'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Great, you\'re wallet now has funds.'
+        ),
+        React.createElement(
+          'p',
+          null,
+          'Feel free to tip any and all Open Published images and support what you like!'
+        )
+      );
+    }
+
     return React.createElement(
       'div',
       { className: 'react-published-images-list' },
       header,
       instructions,
-      list
+      list,
+      React.createElement(
+        Modal,
+        { show: this.state.showNeedBitcoinModal, onHide: this.hideNeedBitcoinModal },
+        React.createElement(
+          Modal.Body,
+          null,
+          modalBodyContent
+        )
+      )
     );
   }
 });
