@@ -54,6 +54,8 @@ var PublishedImagesList = React.createClass({
   },
   tipImage: function tipImage(imageDoc) {
     var component = this;
+    var commonWallet = this.props.commonWallet;
+    var commonBlockchain = this.props.commonBlockchain;
     if (!commonWallet || !commonWallet.address || !commonBlockchain) {
       return;
     }
@@ -67,8 +69,6 @@ var PublishedImagesList = React.createClass({
     this.setState({
       tippingState: tippingState
     });
-    var commonWallet = this.props.commonWallet;
-    var commonBlockchain = this.props.commonBlockchain;
     var destination = imageDoc.sourceAddresses[0];
     var sha1 = imageDoc.sha1;
     var amount = 10000;
