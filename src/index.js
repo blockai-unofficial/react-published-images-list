@@ -29,13 +29,16 @@ var PublishedImagesList = React.createClass({
     }, 3000);
   },
   updateBalance: function(callback) {
-    console.log("updateBalance");
+    //console.log("updateBalance");
     var component = this;
     var commonWallet = this.props.commonWallet;
     var commonBlockchain = this.props.commonBlockchain;
+    if (!commonWallet || !commonWallet.address || !commonBlockchain) {
+      return;
+    }
     commonBlockchain.Addresses.Summary([commonWallet.address], function(err, adrs) { 
       var balance = adrs && adrs[0] ? adrs[0].balance : 0;
-      console.log("balance", balance);
+      //console.log("balance", balance);
       component.setState({
         balance: balance
       });
@@ -49,6 +52,9 @@ var PublishedImagesList = React.createClass({
   },
   tipImage: function(imageDoc) {
     var component = this;
+    if (!commonWallet || !commonWallet.address || !commonBlockchain) {
+      return;
+    }
     if (this.state.balance === 0) {
       this.setState({showNeedBitcoinModal: true});
       return;
@@ -151,7 +157,7 @@ var PublishedImagesList = React.createClass({
     var list = <ol className="images-list">{openpublishImageDocuments.map(createImage)}</ol>
 
     var modalBodyContent;
-    if (this.state.balance === 0 && this.props.balance === 0 && this.props.NoBalance) {
+    if (this.state.balance === 0 && this.props.balance === 0 && this.props.NoBalance && this.props.commonWallet && this.props.commonWallet.address) {
       var NoBalance = this.props.NoBalance;
       modalBodyContent = <NoBalance address={this.props.commonWallet.address} intentMessage={"to tip Open Published images"} />;
     }
