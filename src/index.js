@@ -153,7 +153,7 @@ var PublishedImagesList = React.createClass({
     };
 
     var header = this.props.showHeader ? <h1>Open Publish Images</h1> : <div />;
-    var instructions = this.props.showInstructions ? <p className="alert alert-warning">Click on <button className="tip btn btn-xs btn-default"><img src="http://blockai-front-page.herokuapp.com/assets/support@2x.png" /></button> to tip the owner 110 bits, or about 3 cents worth of Bitcoin!</p> : <div />;
+    var instructions = this.props.showInstructions ? <p className="alert alert-warning">Click on <button className="tip btn btn-xs btn-default"><img src="http://blockai-front-page.herokuapp.com/assets/support@2x.png" /></button> to tip the owner 110 bits, or about 2 cents worth of Bitcoin!</p> : <div />;
     var list = <ol className="images-list">{openpublishImageDocuments.map(createImage)}</ol>
 
     var modalBodyContent;
