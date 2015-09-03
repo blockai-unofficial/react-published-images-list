@@ -1,6 +1,6 @@
 {
   "name": "react-published-images-list",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "A list of the most recent images registered with Open Publish.",
   "main": "build/index.js",
   "scripts": {
