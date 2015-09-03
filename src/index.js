@@ -166,7 +166,7 @@ var PublishedImagesList = React.createClass({
         <div>
           <h4>Bitcoin Transaction Success</h4>
           <p>
-            Great, you're wallet now has funds.
+            Great, your wallet now has funds.
           </p>
           <p>
             Feel free to tip any and all Open Published images and support what you like!

@@ -9,7 +9,7 @@ clean_js:
 
 build/index.js:
 	mkdir -p build
-	./node_modules/.bin/babel src --out-dir build
+	./node_modules/.bin/babel ./src --out-dir ./build
 	touch example/example.js
 
 example/build.js: build/index.js
